@@ -1,0 +1,35 @@
+{
+    "producer_account_name": "fibosphoenix",
+    "org": {
+        "candidate_name": "FO Phoenix",
+        "website": "https://www.fophoenix.com/",
+        },
+        "location": {
+            "name": "Beijing",
+            "country": "CN",
+            "latitude": 39.91667,
+            "longitude": 116.41667
+        },
+    "nodes": [
+        {
+            "location": {
+                "name": "beijing",
+                "country": "china",
+                "latitude": 39.91667,
+                "longitude": 116.41667
+            },
+            "node_type": "full",
+            "api_endpoint": "http://api.fophoenix.com:8888",
+            "ssl_endpoint": "https://api.eosbeijing.one:9876"
+        },
+         {
+            "location": {
+                "name": "beijing",
+                "country": "china",
+                "latitude": 39.91667,
+                "longitude": 116.41667
+            },
+            "node_type": "producer"
+        }
+    ]
+}
