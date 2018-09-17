@@ -14,7 +14,7 @@
         {
             "location": {
                 "name": "beijing",
-                "country": "china",
+                "country": "CN",
                 "latitude": 39.91667,
                 "longitude": 116.41667
             },
@@ -24,7 +24,7 @@
          {
             "location": {
                 "name": "beijing",
-                "country": "china",
+                "country": "CN",
                 "latitude": 39.91667,
                 "longitude": 116.41667
             },
