@@ -20,7 +20,6 @@
             },
             "node_type": "full",
             "api_endpoint": "http://api.fophoenix.com:8888",
-            "ssl_endpoint": "https://api.eosbeijing.one:9876"
         },
          {
             "location": {
@@ -30,6 +29,7 @@
                 "longitude": 116.41667
             },
             "node_type": "producer"
+            "p2p_endpoint": "p2p.fophoenix.com:9870"
         }
     ]
 }
