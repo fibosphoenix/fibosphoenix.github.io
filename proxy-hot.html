@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>FIBOS代理投票热端</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eosjs@16.0.8/lib/eos.min.js" integrity="sha512-zhPSKFEBlDVvUzjl9aBS66cI8tDYoLetynuKvIekHT8NZZ12oxwcZ//M/eT/2Rb/pR/cjFvLD8104Cy//sdEnA=="
+        crossorigin="anonymous"></script>
+
+    <style>
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            margin-bottom: 60px;
+            font-family: "microsoft yahei";
+        }
+
+        .main {
+            background-color: #fff;
+            border-radius: 20px;
+            width: 500px;
+            height: 850px;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        .top {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <form>
+            <fieldset class="form-group">
+                <label for="formGroupExampleInput">你的账号:</label>
+                <input type="text" id="fromaccount" name="fromaccount" class="form-control" placeholder="请输入你的FIBOS账户" />
+            </fieldset>
+            <!--
+            <fieldset class="form-group">
+                <label for="privkey">私钥:</label>
+                <input type="text" id="privkey" class="form-control" placeholder="账户私钥" value="5JfCvLS6wcsjPZDwcf61qjZAFV1woQSFwcDKFxv5qDEuQAjexQL">
+            </fieldset>
+        -->
+            <fieldset class="form-group">
+                <label for="voteproxy">代理账户:</label>
+                <input type="text" id="voteproxy" name="fromaccount" class="form-control" placeholder="代理账户" value="fibosproxy52" />
+            </fieldset>
+        </form>
+        <button class="btn btn-primary" type="submit" id="formquery">submit</button>
+
+        <div class="alert alert-primary top text-center " role="alert">
+            请使用冷端扫描二维码进行签名.
+        </div>
+        <div class="rounded mx-auto d-block top text-center" id="qrcode"></div>
+        <div class="input-group top">
+            <div class="input-group-prepend">
+                <span class="input-group-text">未签名数据</span>
+            </div>
+
+            <textarea class="form-control" style="margin-top: 0px; margin-bottom: 0px; height: 290px;" aria-label="With textarea"
+                id="packed_tx"></textarea>
+        </div>
+
+
+    </div>
+
+    <script src="https://cdn.bootcss.com/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
+    <script>
+        $("#formquery").click(async function () {
+
+            var voter = document.getElementById("fromaccount").value;
+            var proxy = document.getElementById("voteproxy").value;
+            //   var provider = document.getElementById("privkey").value;
+            eosConfig = {
+                chainId: '6aa7bd33b6b45192465afa3553dedb531acaaff8928cf64b70bd4c5e49b7ec6a',
+                //    keyProvider: provider,
+                httpEndpoint: 'http://api.fophoenix.com',
+                expireInSeconds: 1 * 60 * 60,
+            };
+            eosClient = Eos(eosConfig);
+            options = { broadcast: false, sign: false };
+
+            transfer = await eosClient.voteproducer(voter, proxy, [], options)
+
+            const transferTransaction = JSON.stringify(transfer.transaction);
+            // qrcode.js
+            var qrcode = $('#qrcode').qrcode({
+                width: 256,
+                height: 256,
+                text: transferTransaction
+            });
+
+            //.then(tr => {console.info(JSON.stringify(tr.transaction));});
+            // console.log(transferTransaction)
+            document.getElementById('packed_tx').innerHTML = transferTransaction;
+        })
+    </script>
+    <script>
+        //表单验证
+        $(function () {
+            $('form').bootstrapValidator({
+                message: 'This value is not valid',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    fromaccount: {
+                        message: '用户账户验证失败',
+                        validators: {
+                            notEmpty: {
+                                message: '用户账户不能为空'
+                            },
+                            stringLength: {
+                                min: 12,
+                                max: 12,
+                                message: '用户账户必须是12位'
+                            },
+                            regexp: {
+                                regexp: /^[a-z1-5]+$/,
+                                message: '用户账户只能包含a-z,1-5'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
