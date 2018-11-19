@@ -2,146 +2,128 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>FIBOS代理投票热端</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.css" rel="stylesheet">
-
-    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/eosjs@16.0.8/lib/eos.min.js" integrity="sha512-zhPSKFEBlDVvUzjl9aBS66cI8tDYoLetynuKvIekHT8NZZ12oxwcZ//M/eT/2Rb/pR/cjFvLD8104Cy//sdEnA=="
-        crossorigin="anonymous"></script>
-
-    <style>
-        html {
-            position: relative;
-            min-height: 100%;
-        }
-
-        body {
-            margin-bottom: 60px;
-            font-family: "microsoft yahei";
-        }
-
-        .main {
-            background-color: #fff;
-            border-radius: 20px;
-            width: 500px;
-            height: 850px;
-            margin: auto;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-        }
-        .top {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="utf-8">
+  <title>FIBOS代理投票</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link href="https://lib.sinaapp.com/js/bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet">
+  <script src="http://lib.sinaapp.com/js/jquery/3.1.0/jquery-3.1.0.min.js"></script>
+  <script src="https://lib.sinaapp.com/js/bootstrap/4.1.3/js/bootstrap.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/eosjs@16.0.8/lib/eos.min.js" integrity="sha512-zhPSKFEBlDVvUzjl9aBS66cI8tDYoLetynuKvIekHT8NZZ12oxwcZ//M/eT/2Rb/pR/cjFvLD8104Cy//sdEnA=="
+    crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div class="main">
-        <form>
-            <fieldset class="form-group">
-                <label for="formGroupExampleInput">你的账号:</label>
-                <input type="text" id="fromaccount" name="fromaccount" class="form-control" placeholder="请输入你的FIBOS账户" />
-            </fieldset>
-            <!--
-            <fieldset class="form-group">
-                <label for="privkey">私钥:</label>
-                <input type="text" id="privkey" class="form-control" placeholder="账户私钥" value="5JfCvLS6wcsjPZDwcf61qjZAFV1woQSFwcDKFxv5qDEuQAjexQL">
-            </fieldset>
-        -->
-            <fieldset class="form-group">
-                <label for="voteproxy">代理账户:</label>
-                <input type="text" id="voteproxy" name="fromaccount" class="form-control" placeholder="代理账户" value="fibosproxy52" />
-            </fieldset>
-        </form>
-        <button class="btn btn-primary" type="submit" id="formquery">submit</button>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <a class="navbar-brand" href="#">
+      <i class="fa fa-google-wallet" aria-hidden="true"></i> FO投票代理</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <div class="alert alert-primary top text-center " role="alert">
-            请使用冷端扫描二维码进行签名.
-        </div>
-        <div class="rounded mx-auto d-block top text-center" id="qrcode"></div>
-        <div class="input-group top">
-            <div class="input-group-prepend">
-                <span class="input-group-text">未签名数据</span>
-            </div>
-
-            <textarea class="form-control" style="margin-top: 0px; margin-bottom: 0px; height: 290px;" aria-label="With textarea"
-                id="packed_tx"></textarea>
-        </div>
-
+    <div class="collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">FO</a>
+        </li>
+      </ul>
 
     </div>
+  </nav>
 
-    <script src="https://cdn.bootcss.com/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap-validator/0.5.3/js/bootstrapValidator.js"></script>
-    <script>
-        $("#formquery").click(async function () {
+  <main role="main" class="container">
 
-            var voter = document.getElementById("fromaccount").value;
-            var proxy = document.getElementById("voteproxy").value;
-            //   var provider = document.getElementById("privkey").value;
-            eosConfig = {
-                chainId: '6aa7bd33b6b45192465afa3553dedb531acaaff8928cf64b70bd4c5e49b7ec6a',
-                //    keyProvider: provider,
-                httpEndpoint: 'https://ssl.fophoenix.com',
-                expireInSeconds: 1 * 60 * 60,
-            };
-            eosClient = Eos(eosConfig);
-            options = { broadcast: false, sign: false };
+    <!-- <div class="row justify-content-center"> -->
+    <!-- Nav pills -->
+    <div class="justify-content-center">
+      <ul class="nav nav-pills" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="pill" href="#transfer">投票代理</a>
+        </li>
 
-            transfer = await eosClient.voteproducer(voter, proxy, [], options)
+      </ul>
 
-            const transferTransaction = JSON.stringify(transfer.transaction);
-            // qrcode.js
-            var qrcode = $('#qrcode').qrcode({
-                width: 256,
-                height: 256,
-                text: transferTransaction
-            });
 
-            //.then(tr => {console.info(JSON.stringify(tr.transaction));});
-            // console.log(transferTransaction)
-            document.getElementById('packed_tx').innerHTML = transferTransaction;
-        })
-    </script>
-    <script>
-        //表单验证
-        $(function () {
-            $('form').bootstrapValidator({
-                message: 'This value is not valid',
-                feedbackIcons: {
-                    valid: 'glyphicon glyphicon-ok',
-                    invalid: 'glyphicon glyphicon-remove',
-                    validating: 'glyphicon glyphicon-refresh'
-                },
-                fields: {
-                    fromaccount: {
-                        message: '用户账户验证失败',
-                        validators: {
-                            notEmpty: {
-                                message: '用户账户不能为空'
-                            },
-                            stringLength: {
-                                min: 12,
-                                max: 12,
-                                message: '用户账户必须是12位'
-                            },
-                            regexp: {
-                                regexp: /^[a-z1-5]+$/,
-                                message: '用户账户只能包含a-z,1-5'
-                            }
-                        }
-                    }
-                }
-            });
-        });
-    </script>
+      <!-- Tab panes -->
+
+      <div class="tab-content">
+        <div id="transfer" class="container tab-pane active"><br>
+          <!-- 转账 -->
+          <form>
+            <div class="form-group row">
+              <label for="useraccount" class="col-sm-2 form-control-label">账户:</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="useraccount" placeholder="你的账户">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="Privatekey" class="col-sm-2 form-control-label">私钥:</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="privatekey" placeholder="私钥">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="toaccount" class="col-sm-2 form-control-label">代理投票账户:</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="proxy" placeholder="代理投票账户" value="fibosproxy52">
+              </div>
+            </div>
+
+
+          </form>
+          <div class="form-group row">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button class="btn btn-primary" type="submit" id="transferTransaction">提交</button>
+            </div>
+          </div>
+          <!-- 转账结束 -->
+        </div>
+
+
+      </div>
+    </div>
+    <!--  </div> -->
+    </div>
+
+    <div class="input-group mb-4">
+      <div class="input-group-prepend">
+        <span class="input-group-text">数据</span>
+      </div>
+
+      <textarea class="form-control" style="margin-top: 0px; margin-bottom: 0px; height: 10rem;" aria-label="With textarea" id="packed_tx"></textarea>
+    </div>
+
+
+  </main>
+  <script>
+    $("#transferTransaction").click(async function () {
+      var voter = document.getElementById("useraccount").value;
+      var proxy = document.getElementById("proxy").value;
+      var provider = document.getElementById("privatekey").value;
+      eosConfig = {
+        chainId: '6aa7bd33b6b45192465afa3553dedb531acaaff8928cf64b70bd4c5e49b7ec6a',
+        keyProvider: provider,
+        httpEndpoint: 'http://api.fophoenix.com',
+        expireInSeconds: 1 * 60 * 60,
+      };
+      eosClient = Eos(eosConfig);
+      options = { broadcast: true, sign: true };
+
+      //   transfer = await eosClient.voteproducer(voter, proxy, [], options)
+      transfer = await eosClient.voteproducer(voter, proxy, [], options)
+      const transferTransaction = JSON.stringify(transfer.transaction);
+      const transaction_id = JSON.stringify(transfer.transaction.transaction_id);
+      
+      //.then(tr => {console.info(JSON.stringify(tr.transaction));});
+      // console.log(transferTransaction)
+      document.getElementById('packed_tx').innerHTML = transferTransaction;
+      alert("发送成功")
+    })
+  </script>
+
 
 </body>
 
